@@ -1,1 +1,2 @@
-Use this branch to release final versions of development.
+Use this branch to initialize all your feature
+branches.
