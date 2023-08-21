@@ -1,22 +1,23 @@
 import Candidate from "../models/candidateModel.js";
+import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 // @desc    Get Candidates
 // @route   GET /api/candidates
 // @access  Private
-const getCandidates = async (req, res) => {
-        const candidates = await Candidate.find();
+const getCandidates = asyncHandler(async (req, res) => {
+    const candidates = await Candidate.find();
 
-        if (candidates.length === 0) {
-            res.status(404)
-            throw new Error('No candidates available')
-        }
-        res.status(201).json(candidates)
-};
+    if (candidates.length === 0) {
+        res.status(404)
+        throw new Error('No candidates available')
+    }
+    res.status(201).json(candidates)
+});
 
 // @desc    Set Candidates
 // @route   Post /api/candidates/set
 // @access  Private
-const setCandidate = async (req, res) => {
+const setCandidate = asyncHandler(async (req, res) => {
     const { name, email } = req.body;
 
     try {
@@ -39,12 +40,12 @@ const setCandidate = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 
 // @desc    Vote Candidate
 // @route   Post /api/candidates/vote
 // @access  Private
-const voteCandidate = async (req, res) => {
+const voteCandidate = asyncHandler(async (req, res) => {
     const candidateEmail = req.body.email;
     const user_email = req.body.userEmail;
 
@@ -73,13 +74,13 @@ const voteCandidate = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 
 
 // @desc    Delete Candidate
 // @route   Post /api/candidates/delete
 // @access  Private
-const deleteCandidate = async (req, res) => {
+const deleteCandidate = asyncHandler(async (req, res) => {
     const candidateEmail = req.body.email;
     const candidate = await Candidate.findOne({ email: candidateEmail });
     if (!candidate) {
@@ -88,7 +89,7 @@ const deleteCandidate = async (req, res) => {
     }
     await candidate.deleteOne();
     res.status(200).json({ message: 'Candidate deleted successfully' });
-};
+});
 
 
 export { getCandidates, setCandidate, voteCandidate, deleteCandidate }
