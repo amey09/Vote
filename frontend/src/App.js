@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
 
 const App = () => {
     return (
@@ -13,7 +14,7 @@ const App = () => {
                 <ToastContainer />
                 <Routes>
                     <Route path="/login" element={<LoginScreen/>} />
-                    <Route path="/register" element={} />
+                    <Route path="/register" element={<RegisterScreen/>} />
                     <Route path="/" element={}>
                         <Route path="/" element={} />
                     </Route>
