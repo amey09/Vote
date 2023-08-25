@@ -16,6 +16,7 @@ import {
     useDisclosure,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import {useSetCandidateMutation, useDeleteCandidateMutation } from "../slices/candidatesApiSlice";
 
 const AdminDashboard = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -24,6 +25,9 @@ const AdminDashboard = () => {
 
     const [candidateEmail, setCandidateEmail] = useState('');
     const [candidateName, setCandidateName] = useState('');
+
+    const [setCandidate, { isLoading: isAdding }] = useSetCandidateMutation();
+    const [deleteCandidate, { isLoading: isDeleting }] = useDeleteCandidateMutation();
 
     const [isDeleteMode, setIsDeleteMode] = useState(false);
 
@@ -34,9 +38,18 @@ const AdminDashboard = () => {
 
     const handleAction = async () => {
         if (isDeleteMode) {
-
+            if (!candidateEmail) {
+                return;
+            }
+            const data = { email: candidateEmail };
+            await deleteCandidate(data);
         } else {
-
+            if (!candidateName || !candidateEmail) {
+                return;
+            }
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            const data = { name: candidateName, email: candidateEmail, user: userInfo };
+            await setCandidate(data);
         }
 
         setCandidateName('');
