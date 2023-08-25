@@ -2,13 +2,32 @@ import * as Yup from "yup";
 import {Button, Heading, HStack, VStack, Text } from "@chakra-ui/react";
 import TextField from "../components/TextField";
 import {Formik} from "formik";
-import React from "react";
-import {Link} from "react-router-dom";
+import React, {useEffect} from "react";
+import {useNavigate, Link } from "react-router-dom";
+import {useSelector} from "react-redux";
+import {useRegisterMutation} from "../slices/usersApiSlice";
+import {toast} from "react-toastify";
 
 export const RegisterScreen = () => {
 
-    const handleSubmit = async () => {
+    const navigate = useNavigate();
 
+    const [register] = useRegisterMutation();
+
+    const { userInfo } = useSelector((state) => state.auth);
+
+    useEffect(() => {
+        if (userInfo) {
+            navigate('/');
+        }
+    }, [navigate, userInfo]);
+    const handleSubmit = async ({name, email, password, secretKey }) => {
+        try {
+            await register({ name, email, password, secretKey }).unwrap();
+            navigate('/');
+        } catch (err) {
+            toast.error(err?.data?.message || err.error);
+        }
     }
 
     return (

@@ -1,7 +1,7 @@
 import { Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr} from "@chakra-ui/react";
 import React from "react";
 
-const ViewVotes = () => {
+const ViewVotes = ({candidates}) => {
 
     return (
         <>
@@ -16,11 +16,13 @@ const ViewVotes = () => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                            <Tr>
-                                <Td></Td>
-                                <Td></Td>
-                                <Td></Td>
+                        {candidates.map((candidate) => (
+                            <Tr key={candidate._id}>
+                                <Td>{candidate.name}</Td>
+                                <Td>{candidate.email}</Td>
+                                <Td textAlign="center">{candidate.votes}</Td>
                             </Tr>
+                        ))}
                     </Tbody>
                 </Table>
             </TableContainer>
