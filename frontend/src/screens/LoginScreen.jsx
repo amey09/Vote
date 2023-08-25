@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {
     Button, Checkbox,
     Heading, HStack, Text,
@@ -7,12 +7,33 @@ import {
 import * as Yup from 'yup'
 import {Formik} from "formik";
 import TextField from "../components/TextField";
-import {Link} from "react-router-dom";
+import {useNavigate, Link } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {useLoginMutation} from "../slices/usersApiSlice";
+import {setCredentials} from "../slices/authSlice";
 
 export const LoginScreen = () => {
 
-    const handleSubmit = async () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
+    const [login] = useLoginMutation();
+
+    const { userInfo } = useSelector((state) => state.auth);
+
+    useEffect(() => {
+        if (userInfo) {
+            navigate('/');
+        }
+    }, [navigate, userInfo]);
+    const handleSubmit = async ({ email, password }) => {
+        try {
+            const res = await login({ email, password }).unwrap();
+            dispatch(setCredentials({ ...res }));
+            navigate('/');
+        } catch (err) {
+            console.log(err?.data?.message || err.error);
+        }
     };
 
 
@@ -52,7 +73,7 @@ export const LoginScreen = () => {
                     <HStack w='full'>
                         <Text colorScheme='blue' >New user?</Text>
                         <Link to={'/register'}>
-                        <Button variant='link' colorScheme='blue'>SignUp</Button>
+                            <Button variant='link' colorScheme='blue'>SignUp</Button>
                         </Link>
                     </HStack>
                     <Button type='submit' rounded='none' w='full' colorScheme='blue'>Submit</Button>
