@@ -7,12 +7,29 @@ import {
     Link,
     useColorMode,
 } from '@chakra-ui/react';
+import {useNavigate} from 'react-router-dom';
+import {useLogoutMutation} from "../slices/usersApiSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {logout} from "../slices/authSlice";
 
 const Navbar = () => {
 
     const { colorMode, toggleColorMode } = useColorMode();
+    const { userInfo } = useSelector((state) => state.auth);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [logoutApiCall] = useLogoutMutation();
 
     const handleLogout = async () => {
+        try {
+            await logoutApiCall().unwrap();
+            dispatch(logout());
+            navigate('/login');
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (
@@ -31,7 +48,9 @@ const Navbar = () => {
                 <Button onClick={toggleColorMode}>
                     Toggle {colorMode === 'light' ? 'Dark' : 'Light'}
                 </Button>
-                <Button marginLeft="10px" onClick={handleLogout}>Logout</Button>
+                {userInfo && (
+                    <Button marginLeft="10px" onClick={handleLogout}>Logout</Button>
+                )}
             </Flex>
         </Box>
     );
