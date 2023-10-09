@@ -65,9 +65,7 @@ const voteCandidate = asyncHandler(async (req, res) => {
 
         await candidate.save();
 
-        await User.updateOne({ email: user_email }, { $set: { "hasVoted": true } });
-
-        const updatedUser = await User.findOne({ email: user_email });
+        const updatedUser= await User.findOneAndUpdate( {email: user_email}, { hasVoted: true } ,{new: true});
 
         return res.json({ message: 'Vote counted successfully', user: updatedUser });
 
